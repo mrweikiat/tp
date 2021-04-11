@@ -90,4 +90,12 @@ public class PriorityTag {
         }
     }
 
+    @Override
+    public boolean equals(Object other) {
+        return other == this // short circuit if same object
+                || (other instanceof PriorityTag // instanceof handles nulls
+                && tagName.equals(((PriorityTag) other).tagName)); // state check
+    }
+
+
 }

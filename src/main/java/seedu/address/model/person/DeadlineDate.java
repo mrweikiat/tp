@@ -6,6 +6,7 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 
 /**
  * Represents a Task's deadlineDate in the task list.
@@ -14,11 +15,13 @@ import java.time.format.DateTimeParseException;
 public class DeadlineDate implements Comparable<DeadlineDate> {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Deadline date should: \n 1.DD-MM-YYYY,\n 2.it should exist on calendar, and\n"
-                    + " 3.The year is between 2020-2099";
+            "Deadline date should: \n 1.DD-MM-YYYY,\n 2.it should exist on calendar,\n"
+                    + " 3.The year is between 2020-2099, and\n"
+                    + " 4.The date cannot be earlier than today.";
 
     public static final String VALIDATION_REGEX = "^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[012])-((20)[2-9][0-9])$";
-    private static final DateTimeFormatter dateDateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private static final DateTimeFormatter dateDateFormatter = DateTimeFormatter.ofPattern("dd-MM-uuuu")
+            .withResolverStyle(ResolverStyle.STRICT);
 
     private LocalDate deadlineDate;
 
@@ -42,6 +45,9 @@ public class DeadlineDate implements Comparable<DeadlineDate> {
         }
         try {
             LocalDate testingDate = LocalDate.parse(test, dateDateFormatter);
+            if (testingDate.compareTo(LocalDate.now()) < 0) {
+                return false;
+            }
         } catch (DateTimeParseException e) {
             return false;
         }
